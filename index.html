@@ -246,10 +246,11 @@
     </div>
 
     <script type="module">
-        const apiKey = "";
+        const apiKey = "AIzaSyC6ze8VnrLDo4_gts57tEvsI8RXQ5j7F28";
         
         function getApiUrl(baseUrl) {
-            return apiKey ? `${baseUrl}?key=${apiKey}` : baseUrl;
+            // API anahtarı artık doğrudan URL'ye ekleniyor.
+            return `${baseUrl}?key=${apiKey}`;
         }
         
         // DOM Elementleri
@@ -324,7 +325,26 @@
             screens[screenId].classList.remove('hidden');
         }
         
-        // --- API Çağrıları (Değişiklik yok) ---
+        // --- API Çağrıları ---
+        async function callApi(url, payload) {
+            try {
+                const response = await fetch(url, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                });
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    console.error("API Error Response:", errorBody);
+                    throw new Error(`HTTP hatası! Durum: ${response.status}. Mesaj: ${errorBody.error?.message || 'Bilinmeyen Hata'}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("API Çağrı Hatası:", error);
+                throw error; // Hatanın yukarıya yayılmasını sağla
+            }
+        }
+
         async function callGeminiForStory(prompt) {
             const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent');
             const payload = {
@@ -345,13 +365,10 @@
                 }
             };
             try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
-                const result = await response.json();
+                const result = await callApi(url, payload);
                 return JSON.parse(result.candidates[0].content.parts[0].text);
             } catch (error) {
-                console.error("Gemini Hikaye API hatası:", error);
-                storyText.textContent = "Hikaye oluşturulurken bir hata oluştu.";
+                storyText.textContent = `Hikaye oluşturulurken bir hata oluştu: ${error.message}`;
                 return null;
             }
         }
@@ -360,13 +377,10 @@
              const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent');
              const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
              try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
-                const result = await response.json();
+                const result = await callApi(url, payload);
                 return result.candidates[0].content.parts[0].text;
              } catch(error) {
-                 console.error("Gemini Metin API hatası:", error);
-                 return "Yapay zeka yanıt verirken bir sorunla karşılaştı.";
+                 return `Yapay zeka yanıt verirken bir sorunla karşılaştı: ${error.message}`;
              }
         }
 
@@ -374,9 +388,7 @@
             const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict');
             const payload = { instances: [{ prompt: prompt }], parameters: { "sampleCount": 1} };
              try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                 if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
-                const result = await response.json();
+                const result = await callApi(url, payload);
                 return result.predictions && result.predictions.length > 0 ? `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}` : null;
             } catch (error) {
                 console.error("Imagen API hatası:", error);
@@ -557,7 +569,7 @@
             
             if (!storyData) {
                 isGenerating = false; textLoader.classList.add('hidden');
-                storyText.textContent = "Hikaye devam ettirilemedi."; storyText.classList.remove('hidden');
+                storyText.classList.remove('hidden'); // Show error message
                 return;
             }
 
