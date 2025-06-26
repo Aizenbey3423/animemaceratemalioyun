@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini & Imagen | Anime Temalı Macera Oyunu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #111827;
+            --text-color: #F3F4F6;
+            --header-color: #a5b4fc;
+            --btn-grad-start: #5b21b6;
+            --btn-grad-end: #4c1d95;
+            --btn-shadow-1: #1e0b38;
+            --btn-shadow-2: #6c31f4;
+            --btn-hover-grad-start: #8b5cf6;
+            --btn-hover-grad-end: #7c3aed;
+            --btn-inset-shadow-1: #6d28d9;
+            --btn-inset-shadow-2: #9d7aea;
+            --btn-disabled-grad-start: #4b5563;
+            --btn-disabled-grad-end: #374151;
+            --loader-color: #6D28D9;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background-image 0.5s ease-in-out;
+        }
+        
+        /* Gojo Teması: Mavi-Açık Mavi */
+        body.theme-gojo {
+            background-image: url('https://images.alphacoders.com/133/thumb-1920-1332280.jpeg');
+            --header-color: #93c5fd; /* Açık Mavi */
+            --btn-grad-start: #3b82f6; /* Mavi */
+            --btn-grad-end: #2563eb; /* Koyu Mavi */
+            --btn-shadow-1: #1e3a8a; 
+            --btn-shadow-2: #60a5fa;
+            --btn-hover-grad-start: #93c5fd; 
+            --btn-hover-grad-end: #60a5fa;
+            --btn-inset-shadow-1: #2563eb; 
+            --btn-inset-shadow-2: #bfdbfe;
+            --loader-color: #3b82f6;
+        }
+
+        /* Sukuna Teması: Kırmızı-Turuncu-Sarı */
+        body.theme-sukuna {
+            background-image: url('https://images6.alphacoders.com/134/1340814.jpeg');
+            --header-color: #facc15; /* Sarı */
+            --btn-grad-start: #ef4444; /* Kırmızı */
+            --btn-grad-end: #f97316; /* Turuncu */
+            --btn-shadow-1: #991b1b; 
+            --btn-shadow-2: #fb923c;
+            --btn-hover-grad-start: #fca5a5; 
+            --btn-hover-grad-end: #fdba74;
+            --btn-inset-shadow-1: #dc2626; 
+            --btn-inset-shadow-2: #fed7aa;
+            --loader-color: #ef4444;
+        }
+        
+        /* Aizen Teması: Mor-Kapalı Mor */
+        body.theme-aizen {
+            background-image: url('https://images4.alphacoders.com/138/1383331.jpg');
+            --header-color: #c084fc; /* Mor */
+            --btn-grad-start: #a855f7; /* Mor */
+            --btn-grad-end: #9333ea; /* Kapalı Mor */
+            --btn-shadow-1: #581c87; 
+            --btn-shadow-2: #d8b4fe;
+            --btn-hover-grad-start: #e9d5ff; 
+            --btn-hover-grad-end: #c084fc;
+            --btn-inset-shadow-1: #9333ea; 
+            --btn-inset-shadow-2: #f3e8ff;
+             --loader-color: #a855f7;
+        }
+
+        /* Itachi Teması: Kırmızı-Kapalı Kırmızı */
+        body.theme-itachi {
+            background-image: url('https://images7.alphacoders.com/129/1299888.png');
+            --header-color: #fca5a5; /* Açık Kırmızı */
+             --btn-grad-start: #ef4444; /* Kırmızı */
+             --btn-grad-end: #b91c1c; /* Kapalı Kırmızı */
+            --btn-shadow-1: #7f1d1d; 
+            --btn-shadow-2: #fca5a5;
+            --btn-hover-grad-start: #fca5a5; 
+            --btn-hover-grad-end: #ef4444;
+            --btn-inset-shadow-1: #b91c1c; 
+            --btn-inset-shadow-2: #fecaca;
+            --loader-color: #ef4444;
+        }
+
+        /* Sasuke Teması: Mor-Açık Mor */
+        body.theme-sasuke {
+            background-image: url('https://images2.alphacoders.com/644/644179.jpg');
+            --header-color: #c4b5fd; /* Açık Mor */
+            --btn-grad-start: #8b5cf6; /* Açık Mor */
+            --btn-grad-end: #7c3aed; /* Mor */
+            --btn-shadow-1: #5b21b6; 
+            --btn-shadow-2: #a78bfa;
+            --btn-hover-grad-start: #c4b5fd; 
+            --btn-hover-grad-end: #a78bfa;
+            --btn-inset-shadow-1: #6d28d9; 
+            --btn-inset-shadow-2: #ddd6fe;
+            --loader-color: #7c3aed;
+        }
+
+        .cinzel { font-family: 'Cinzel', serif; }
+
+        .header-text { color: var(--header-color); }
+
+        .btn-3d {
+            position: relative; border: none; color: white;
+            padding: 15px 32px; text-align: center; text-decoration: none;
+            display: inline-block; font-size: 16px; margin: 4px 2px;
+            cursor: pointer; border-radius: 12px;
+            transition: all 0.2s ease-in-out;
+            background: linear-gradient(145deg, var(--btn-grad-start), var(--btn-grad-end));
+            box-shadow: 5px 5px 15px var(--btn-shadow-1), -5px -5px 15px var(--btn-shadow-2);
+            transform-style: preserve-3d;
+        }
+        .btn-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 7px 7px 20px var(--btn-shadow-1), -7px -7px 20px var(--btn-shadow-2);
+        }
+        .btn-3d:active {
+            transform: translateY(2px);
+            box-shadow: 3px 3px 10px var(--btn-shadow-1), -3px -3px 10px var(--btn-shadow-2);
+        }
+        .btn-3d.selected {
+            background: linear-gradient(145deg, var(--btn-hover-grad-start), var(--btn-hover-grad-end));
+            box-shadow: inset 3px 3px 8px var(--btn-inset-shadow-1), inset -3px -3px 8px var(--btn-inset-shadow-2);
+        }
+        .btn-3d:disabled {
+            background: linear-gradient(145deg, var(--btn-disabled-grad-start), var(--btn-disabled-grad-end));
+            box-shadow: none; cursor: not-allowed;
+        }
+
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+        .loader, .image-loader-anim {
+            width: 48px; height: 48px; border: 5px solid #FFF;
+            border-bottom-color: var(--loader-color);
+            border-radius: 50%; display: inline-block; box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="app-container" class="w-full max-w-6xl mx-auto">
+        
+        <!-- 0. Ekran: Tema Seçimi -->
+        <div id="theme-selection" class="text-center">
+            <h1 class="cinzel text-4xl md:text-5xl font-bold mb-2 header-text">Maceranın Temasını Seç</h1>
+            <p class="text-gray-400 mb-8">Hikayenin atmosferini ve renk paletini belirle.</p>
+            <div id="theme-buttons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 max-w-5xl mx-auto"></div>
+        </div>
+        
+        <!-- 1. Ekran: Tür Seçimi -->
+        <div id="genre-selection" class="hidden text-center">
+            <h1 class="cinzel text-4xl md:text-5xl font-bold mb-2 header-text">Maceranın Türünü Belirle</h1>
+            <p class="text-gray-400 mb-8">En fazla 3 tür seçerek kendi benzersiz hikayeni oluştur.</p>
+            <div id="genre-buttons" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto"></div>
+            <button id="continue-to-name" class="btn-3d" disabled>Devam Et</button>
+            <p id="genre-error" class="text-red-400 mt-4 h-5"></p>
+        </div>
+
+        <!-- 2. Ekran: İsim ve Karakter Seçimi -->
+        <div id="name-selection" class="hidden text-center">
+            <h1 class="cinzel text-4xl md:text-5xl font-bold mb-2 header-text">Karakterini Yarat</h1>
+            <p class="text-gray-400 mb-8">Adını gir, yapay zeka sana özel karakterler önersin veya kendi isminle başla.</p>
+            <div class="max-w-md mx-auto">
+                <input type="text" id="player-name" placeholder="Adını buraya yaz..." class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4">
+                <button id="suggest-names" class="btn-3d w-full mb-4">✨ Karakter İsimleri Öner</button>
+                <div id="name-suggestions-container" class="min-h-[100px]">
+                    <div id="name-loader" class="hidden loader mx-auto"></div>
+                    <div id="character-suggestions" class="grid grid-cols-2 gap-4"></div>
+                </div>
+                 <button id="start-adventure" class="btn-3d mt-4" disabled>Maceraya Başla</button>
+            </div>
+        </div>
+        
+        <!-- 3. Ekran: Oyun Ekranı -->
+        <div id="game-screen" class="hidden">
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-panel p-4 flex flex-col items-center justify-center min-h-[400px]">
+                    <div id="image-loader" class="image-loader-anim"></div>
+                    <img id="story-image" src="" alt="Hikaye görseli" class="hidden w-full h-auto object-cover rounded-lg shadow-lg">
+                </div>
+                <div class="glass-panel p-6 flex flex-col justify-between min-h-[400px]">
+                    <div id="story-text-container" class="overflow-y-auto flex-grow mb-4 pr-2">
+                        <div id="text-loader" class="hidden loader mx-auto"></div>
+                        <p id="story-text" class="text-lg leading-relaxed"></p>
+                    </div>
+                    <div class="text-center mt-auto pt-4 border-t border-gray-600">
+                        <button id="think-button" class="btn-3d text-sm py-2 px-4 mb-4">Ne Düşünüyor? ✨</button>
+                        <div id="choices-container">
+                             <h3 class="cinzel text-xl font-bold mb-4 text-center header-text">Şimdi Ne Yapacaksın?</h3>
+                             <div id="choice-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. Ekran: Oyun Sonu -->
+        <div id="game-over-screen" class="hidden text-center">
+            <h1 id="game-over-title" class="cinzel text-5xl font-bold mb-4 header-text">Macera Sona Erdi</h1>
+            <p id="end-message" class="text-gray-300 text-xl mb-8">Oynadığın için teşekkürler!</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button onclick="window.location.reload()" class="btn-3d">Yeniden Başla</button>
+                <button id="summarize-button" class="btn-3d">Macerayı Özetle ✨</button>
+            </div>
+            <div id="summary-container" class="mt-8 hidden w-full max-w-3xl mx-auto text-left glass-panel p-6">
+                 <div id="summary-loader" class="hidden loader mx-auto my-4"></div>
+                 <p id="summary-text" class="text-lg leading-relaxed"></p>
+            </div>
+        </div>
+
+        <!-- Düşünce Modalı -->
+        <div id="thought-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div class="glass-panel p-6 rounded-lg max-w-lg w-full text-center">
+                <h2 class="cinzel text-2xl font-bold mb-4 header-text">Karakterin Düşünceleri ✨</h2>
+                <div id="thought-loader" class="hidden loader mx-auto my-4"></div>
+                <p id="thought-text" class="text-gray-300 text-lg"></p>
+                <button id="close-thought-modal" class="btn-3d mt-6 mx-auto block">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const apiKey = "";
+        
+        function getApiUrl(baseUrl) {
+            return apiKey ? `${baseUrl}?key=${apiKey}` : baseUrl;
+        }
+        
+        // DOM Elementleri
+        const screens = {
+            theme: document.getElementById('theme-selection'),
+            genre: document.getElementById('genre-selection'),
+            name: document.getElementById('name-selection'),
+            game: document.getElementById('game-screen'),
+            gameOver: document.getElementById('game-over-screen')
+        };
+        
+        const themeButtonsContainer = document.getElementById('theme-buttons');
+        const genreButtonsContainer = document.getElementById('genre-buttons');
+        const continueToNameBtn = document.getElementById('continue-to-name');
+        const genreError = document.getElementById('genre-error');
+        const playerNameInput = document.getElementById('player-name');
+        const suggestNamesBtn = document.getElementById('suggest-names');
+        const nameLoader = document.getElementById('name-loader');
+        const characterSuggestionsContainer = document.getElementById('character-suggestions');
+        const startAdventureBtn = document.getElementById('start-adventure');
+        const imageLoader = document.getElementById('image-loader');
+        const storyImage = document.getElementById('story-image');
+        const textLoader = document.getElementById('text-loader');
+        const storyText = document.getElementById('story-text');
+        const choiceButtonsContainer = document.getElementById('choice-buttons');
+        const gameOverTitle = document.getElementById('game-over-title');
+        const endMessage = document.getElementById('end-message');
+        const summarizeBtn = document.getElementById('summarize-button');
+        const summaryContainer = document.getElementById('summary-container');
+        const summaryLoader = document.getElementById('summary-loader');
+        const summaryText = document.getElementById('summary-text');
+        const thinkBtn = document.getElementById('think-button');
+        const thoughtModal = document.getElementById('thought-modal');
+        const thoughtLoader = document.getElementById('thought-loader');
+        const thoughtText = document.getElementById('thought-text');
+        const closeThoughtModalBtn = document.getElementById('close-thought-modal');
+        
+        // Oyun Durumu
+        let selectedGenres = [];
+        let characterName = '';
+        let storyHistory = [];
+        let currentChapter = 0;
+        const MAX_CHAPTERS = 10;
+        let isGenerating = false;
+        let selectedTheme = 'default';
+
+        // Görsel Tutarlılık Değişkenleri
+        let styleSignature = '';
+        let characterSignature = '';
+        let styleSignaturePromise = null;
+        let characterSignaturePromise = null;
+
+        const themes = {
+            'Gojo': 'gojo',
+            'Sukuna': 'sukuna',
+            'Aizen': 'aizen',
+            'Itachi': 'itachi',
+            'Sasuke': 'sasuke',
+            'Varsayılan': 'default'
+        };
+
+        const genres = [
+            'Fantastik', 'Bilim Kurgu', 'Korku', 
+            'Gizem', 'Macera', 'Isekai', 'Aksiyon',
+            'Cyberpunk', 'Shounen', 'Gerilim',
+            'Distopya', 'Komedi', 'Seinen',
+            'Mecha', 'Slice of Life', 'Mahou Shoujo'
+        ];
+
+        function showScreen(screenId) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenId].classList.remove('hidden');
+        }
+        
+        // --- API Çağrıları (Değişiklik yok) ---
+        async function callGeminiForStory(prompt) {
+            const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent');
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: {
+                  responseMimeType: "application/json",
+                  responseSchema: {
+                      type: "OBJECT",
+                      properties: {
+                          "story": { "type": "STRING" },
+                          "choices": { "type": "ARRAY", "items": { "type": "STRING" } },
+                          "image_prompt": { "type": "STRING" },
+                          "is_final_chapter": { "type": "BOOLEAN" },
+                           "final_title": { "type": "STRING" }
+                      },
+                      required: ["story", "choices", "image_prompt", "is_final_chapter"]
+                  }
+                }
+            };
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
+                const result = await response.json();
+                return JSON.parse(result.candidates[0].content.parts[0].text);
+            } catch (error) {
+                console.error("Gemini Hikaye API hatası:", error);
+                storyText.textContent = "Hikaye oluşturulurken bir hata oluştu.";
+                return null;
+            }
+        }
+        
+        async function callGeminiForText(prompt) {
+             const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent');
+             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+             try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
+                const result = await response.json();
+                return result.candidates[0].content.parts[0].text;
+             } catch(error) {
+                 console.error("Gemini Metin API hatası:", error);
+                 return "Yapay zeka yanıt verirken bir sorunla karşılaştı.";
+             }
+        }
+
+        async function callImagen(prompt) {
+            const url = getApiUrl('https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict');
+            const payload = { instances: [{ prompt: prompt }], parameters: { "sampleCount": 1} };
+             try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                 if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
+                const result = await response.json();
+                return result.predictions && result.predictions.length > 0 ? `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}` : null;
+            } catch (error) {
+                console.error("Imagen API hatası:", error);
+                return null;
+            }
+        }
+
+        // --- Tutarlılık İmza Fonksiyonları ---
+        async function generateStyleSignature() {
+            const prompt = `Şu türlere dayanan bir macera oyunu için tutarlı bir görsel stil imzası oluştur: ${selectedGenres.join(', ')}. Bu imza, genel sanat yönetmenliğini (örn: "epic fantasy art", "neon-noir cinematic"), renk paletini ve atmosferi tanımlayan 2-3 anahtar kelime içermelidir. Sadece anahtar kelimeleri, virgülle ayırarak ver. Örnek: epic fantasy art, vibrant colors, dramatic lighting`;
+            styleSignature = await callGeminiForText(prompt);
+            console.log("Stil İmzası Oluşturuldu:", styleSignature);
+            return styleSignature;
+        }
+
+        async function generateCharacterSignature(name) {
+            const prompt = `Bir macera oyununda ana karakterin adı "${name}". Seçilen türler şunlar: ${selectedGenres.join(', ')}. Bu bilgilere dayanarak karakter için kısa ve tutarlı bir görsel tanım oluştur. Bu tanım, karakterin temel fiziksel özelliklerini ve giyim tarzını içermelidir. Örnek: A young man with silver hair and glowing blue eyes, wearing dark leather armor.`;
+            characterSignature = await callGeminiForText(prompt);
+            console.log("Karakter İmzası Oluşturuldu:", characterSignature);
+            return characterSignature;
+        }
+
+        // --- Oyun Akışı ---
+        function createThemeButtons() {
+            for (const [name, className] of Object.entries(themes)) {
+                const button = document.createElement('button');
+                button.textContent = name;
+                button.classList.add('btn-3d');
+                button.onclick = () => selectTheme(className);
+                themeButtonsContainer.appendChild(button);
+            }
+        }
+
+        function selectTheme(themeClass) {
+            Object.values(themes).forEach(cls => {
+                if (cls !== 'default') {
+                    document.body.classList.remove(`theme-${cls}`);
+                }
+            });
+
+            if (themeClass !== 'default') {
+                document.body.classList.add(`theme-${themeClass}`);
+            }
+            selectedTheme = themeClass;
+            showScreen('genre');
+        }
+
+        function createGenreButtons() {
+            genreButtonsContainer.innerHTML = ''; // Butonları yeniden oluşturmadan önce temizle
+            genres.forEach(genre => {
+                const button = document.createElement('button');
+                button.textContent = genre;
+                button.classList.add('btn-3d');
+                button.onclick = () => selectGenre(genre, button);
+                genreButtonsContainer.appendChild(button);
+            });
+        }
+
+        function selectGenre(genre, button) {
+            genreError.textContent = '';
+            const index = selectedGenres.indexOf(genre);
+            if (index > -1) {
+                selectedGenres.splice(index, 1);
+                button.classList.remove('selected');
+            } else {
+                if (selectedGenres.length < 3) {
+                    selectedGenres.push(genre);
+                    button.classList.add('selected');
+                } else {
+                    genreError.textContent = 'En fazla 3 tür seçebilirsin.';
+                }
+            }
+            continueToNameBtn.disabled = selectedGenres.length === 0;
+        }
+        
+        async function suggestCharacterNames() {
+            const playerName = playerNameInput.value.trim();
+            if (!playerName) {
+                 const nameInput = document.getElementById('player-name');
+                 nameInput.classList.add('border-red-500', 'animate-pulse');
+                 nameInput.placeholder = "Lütfen önce bir isim gir!";
+                 setTimeout(() => {
+                     nameInput.classList.remove('border-red-500', 'animate-pulse');
+                 }, 2000);
+                return;
+            }
+            
+            characterSuggestionsContainer.innerHTML = '';
+            nameLoader.classList.remove('hidden');
+            suggestNamesBtn.disabled = true;
+
+            const prompt = `Bir macera oyunu için oyuncunun adı '${playerName}'. Bu isme tınısal olarak benzeyen veya bu isimden ilham alan, seçilen şu türlere (${selectedGenres.join(', ')}) uygun 4 adet özgün ve havalı karakter ismi öner. Sadece isimleri, aralarına virgül koyarak listele.`;
+            const namesText = await callGeminiForText(prompt);
+            const names = namesText.split(',').map(name => name.trim());
+            
+            nameLoader.classList.add('hidden');
+            suggestNamesBtn.disabled = false;
+
+            names.forEach(name => {
+                const button = document.createElement('button');
+                button.textContent = name;
+                button.classList.add('btn-3d', 'w-full');
+                button.onclick = () => selectCharacterName(name, button);
+                characterSuggestionsContainer.appendChild(button);
+            });
+        }
+
+        function selectCharacterName(name, selectedButton) {
+            characterName = name;
+            playerNameInput.value = name;
+            characterSignaturePromise = generateCharacterSignature(name); 
+            characterSuggestionsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            selectedButton.classList.add('selected');
+            startAdventureBtn.disabled = false;
+        }
+
+        function startGame() {
+            const finalName = characterName || playerNameInput.value.trim();
+            
+            if (!finalName) {
+                const nameInput = document.getElementById('player-name');
+                nameInput.classList.add('border-red-500', 'animate-pulse');
+                nameInput.placeholder = "Lütfen bir karakter ismi seçin veya girin!";
+                setTimeout(() => {
+                     nameInput.classList.remove('border-red-500', 'animate-pulse');
+                }, 2000);
+                return;
+            }
+            
+            characterName = finalName; 
+
+            if (!characterSignaturePromise) {
+                characterSignaturePromise = generateCharacterSignature(characterName);
+            }
+
+            currentChapter = 1;
+            storyHistory = [];
+            showScreen('game');
+            generateNextChapter(null);
+        }
+        
+        async function generateNextChapter(playerChoice) {
+            if (isGenerating) return;
+            isGenerating = true;
+            thinkBtn.disabled = true;
+
+            storyText.classList.add('hidden');
+            textLoader.classList.remove('hidden');
+            choiceButtonsContainer.innerHTML = '';
+
+            if (currentChapter === 1) {
+                imageLoader.classList.remove('hidden');
+                storyImage.classList.add('hidden');
+                try {
+                    [styleSignature, characterSignature] = await Promise.all([styleSignaturePromise, characterSignaturePromise]);
+                } catch (error) {
+                    console.error("İmza oluşturma başarısız oldu:", error);
+                    storyText.textContent = "Karakter veya dünya stili oluşturulurken bir hata oluştu. Lütfen yeniden deneyin.";
+                    textLoader.classList.add('hidden');
+                    storyText.classList.remove('hidden');
+                    isGenerating = false;
+                    return;
+                }
+            }
+
+            const historyPrompt = storyHistory.length > 0 ? "Önceki bölümlerin özeti:\n" + storyHistory.map(h => h.story).join('\n---\n') : "Bu maceranın ilk bölümü.";
+            const choicePrompt = playerChoice ? `Oyuncunun son seçimi şuydu: "${playerChoice}"` : "Oyuncu maceraya yeni başlıyor.";
+            
+            const prompt = `Sen bir interaktif macera oyunu yazan bir yapay zekasın. JSON formatında cevap ver.
+                Hikaye Türleri: ${selectedGenres.join(', ')}. Ana Karakter: ${characterName}. Bölüm: ${currentChapter}/${MAX_CHAPTERS}.
+                Geçmiş: ${historyPrompt}. Oyuncu Seçimi: ${choicePrompt}.
+                Lütfen bu bilgilere dayanarak hikayenin bir sonraki, sürükleyici bölümünü (1-2 paragraf) yaz ve oyuncu için 4 farklı, kısa seçenek sun.
+                Bu sahne için İngilizce bir görsel istemi ("image_prompt") oluştur. Bu istem SADECE karakterin o anki eylemini ve bulunduğu çevreyi betimlemelidir. Karakterin genel görünüşünü veya sanat stilini TARİF ETME. Örnek: "standing in front of a ruined castle", "looking at a mysterious object on a desk".
+                Eğer bu bölüm son bölümse veya hikaye doğal olarak biterse, "is_final_chapter"ı true yap.
+            `;
+            
+            const storyData = await callGeminiForStory(prompt);
+            
+            if (!storyData) {
+                isGenerating = false; textLoader.classList.add('hidden');
+                storyText.textContent = "Hikaye devam ettirilemedi."; storyText.classList.remove('hidden');
+                return;
+            }
+
+            storyHistory.push(storyData);
+            textLoader.classList.add('hidden');
+            storyText.textContent = storyData.story;
+            storyText.classList.remove('hidden');
+            
+            const fullImagePrompt = `${styleSignature}. ${characterSignature}. ${storyData.image_prompt}, cinematic lighting, dramatic, high detail`;
+            console.log("Tam Görsel İstemi:", fullImagePrompt);
+            callImagen(fullImagePrompt).then(imageUrl => {
+                 imageLoader.classList.add('hidden');
+                 if(imageUrl) {
+                    storyImage.src = imageUrl;
+                    storyImage.classList.remove('hidden');
+                 } else { storyImage.alt = "Görsel yüklenemedi"; }
+            });
+
+            if (storyData.is_final_chapter || currentChapter >= MAX_CHAPTERS || storyData.choices.length === 0) {
+                endGame(storyData);
+                return;
+            }
+
+            storyData.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.classList.add('btn-3d');
+                button.onclick = () => { currentChapter++; generateNextChapter(choice); };
+                choiceButtonsContainer.appendChild(button);
+            });
+            
+            isGenerating = false;
+            thinkBtn.disabled = false;
+        }
+
+        async function getCharacterThoughts() {
+            thinkBtn.disabled = true;
+            thoughtText.textContent = '';
+            thoughtModal.classList.remove('hidden');
+            thoughtLoader.classList.remove('hidden');
+            
+            const currentStory = storyHistory[storyHistory.length - 1].story;
+            const prompt = `Bir macera oyununda ana karakter olan ${characterName} şu an bu durumu yaşıyor: "${currentStory}". Karakterin iç dünyasını, duygularını ve aklından geçenleri birinci şahıs ağzından kısa bir paragraf olarak yaz.`;
+            
+            const thoughts = await callGeminiForText(prompt);
+            
+            thoughtLoader.classList.add('hidden');
+            thoughtText.textContent = thoughts;
+            thinkBtn.disabled = false;
+        }
+
+        async function summarizeAdventure() {
+            summarizeBtn.disabled = true;
+            summaryContainer.classList.remove('hidden');
+            summaryLoader.classList.remove('hidden');
+            
+            const fullStory = storyHistory.map(h => h.story).join('\n\n');
+            const prompt = `${characterName} adlı karakterin başından geçen macera bu şekildedir:\n\n${fullStory}\n\nBu macerayı anlatan kısa, epik bir özet veya sonsöz yaz.`;
+            
+            const summary = await callGeminiForText(prompt);
+            
+            summaryLoader.classList.add('hidden');
+            summaryText.textContent = summary;
+        }
+
+        function endGame(finalData) {
+            if (finalData.final_title) {
+                gameOverTitle.textContent = finalData.final_title;
+            }
+            endMessage.textContent = finalData.story;
+            showScreen('gameOver');
+        }
+
+        function handleContinueToName() {
+            if (selectedGenres.length > 0) {
+                styleSignaturePromise = generateStyleSignature();
+                showScreen('name');
+            }
+        }
+
+        function initialize() {
+            createThemeButtons();
+            createGenreButtons();
+            continueToNameBtn.addEventListener('click', handleContinueToName);
+            suggestNamesBtn.addEventListener('click', suggestCharacterNames);
+            startAdventureBtn.addEventListener('click', startGame);
+            
+            playerNameInput.addEventListener('input', () => {
+                if (playerNameInput.value.trim() !== '') {
+                    startAdventureBtn.disabled = false;
+                    characterName = ''; 
+                    characterSignaturePromise = null;
+                    characterSuggestionsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                } else {
+                    startAdventureBtn.disabled = true;
+                }
+            });
+
+            thinkBtn.addEventListener('click', getCharacterThoughts);
+            closeThoughtModalBtn.addEventListener('click', () => thoughtModal.classList.add('hidden'));
+            summarizeBtn.addEventListener('click', summarizeAdventure);
+            showScreen('theme');
+        }
+
+        initialize();
+    </script>
+</body>
+</html>
